@@ -1,2 +1,2 @@
-# note
-随记
+# Python自动化学习
+python+selenium
