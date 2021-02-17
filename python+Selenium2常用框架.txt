@@ -1,0 +1,69 @@
+Unittest单元测试框架
+除此之外，比如说xunit、junit、nunit、pytest、phpunit
+
+1.不用unittest：if __name__模块的内置属性 
+if __name__ == '__main__'：当.py文件被直接运行时，if __name__ == '__main__'之下的代码块将被运行；
+当.py文件以模块形式被导入时，if __name__ == '__main__'之下的代码块不被运行。
+
+2.使用unittest
+unittest.main()使用TestLoader类搜索所有包含在该模块以“test”命名开头的测试方法，并自动执行它们，执行方法的默认顺序是：根据ASCII码的顺序加载测试用例，数字与字母的顺序为：0-9，A-Z，a-z。所以以A开头的测试用例方法会优先执行，以a开头会后执行。
+
+3.使用unittest步骤 
+测试类必须继承unittest.TestCase
+测试方法必须以test开头
+使用断言  self.assertEqual(result, 5)
+运行
+if __name__ == '__main__':    unittest.main()
+
+4.unittest四个概念：testcase、testsuite、test runner 、test fixture
+TestCase类，所有测试用例类继承的基本类。
+class TestCount(unittest.TestCase):
+TestSuite类，多个测试用例集合在一起来执行，顺序为先加入先执行
+suite = unittest.TestSuite()suite.addTest(TestCount('test_add'))suite.addTest(TestCount('test_sub'))
+
+TextTestRunner类，通过该类下面的run()方法来运行suite所组装的测试用例，入参为suite测试套件。
+runner = unittest.TextTestRunner()runner.run(suite)
+Text Fixture类，通过覆盖TestCase的setUp()和tearDown()来实现环境的创建与销毁
+def setUp(self):    print("setUp")def tearDown(self):    print("tearDown")
+
+setUp():setUp()方法用于每个测试用例执行前的初始化工作。如测试用例中需要访问浏览器，可以在setUp中实例化浏览器驱动。
+tearDown():tearDown()方法用于每个测试用例执行之后的善后工作。如：关闭浏览器
+
+断言方法：在执行测试用例的过程中，最终用例是否执行通过，是通过判断测试得到的实际结果和预期结果是否相等决定的。
+assertEqual(a,b，[msg='测试失败时打印的信息']):断言a和b是否相等，相等则测试用例通过。
+assertNotEqual(a,b，[msg='测试失败时打印的信息']):断言a和b是否相等，不相等则测试用例通过。
+assertTrue(x，[msg='测试失败时打印的信息'])：断言x是否True，是True则测试用例通过
+
+unittest.skip():装饰器，当运行用例时，有些用例可能不想执行，可用装饰器暂时屏蔽该条测试用例。常见的用法如想调试某一测试用例，可先屏蔽其他用例就。
+@unittest.skip(reason): skip(reason)装饰器：无条件跳过装饰的测试，并说明跳过测试的原因。
+@unittest.skipIf(reason): skipIf(condition,reason)装饰器：条件为真时，跳过装饰的测试，并说明跳过测试的原因。
+@unittest.skipUnless(reason): skipUnless(condition,reason)装饰器：条件为假时，跳过装饰的测试，并说明跳过测试的原因
+
+Fixtures
+def setUpModule(): /def tearDownModule():
+	整个模块的开始和结束执行
+
+def setUpClass(cls):/def tearDownClass(cls):
+	整个测试类开始和结束时执行，必须用@classmethod修饰
+
+5.HTMLTestRunner
+HTMLTestRunner是Python的标准库unittest单元测试框架的一个扩展，用于生成HTML测试报告。
+下载地址：
+  http://tungwaiyip.info/software/HTMLTestRunner.html
+将 HTMLTestRunner.py放在..\Python35\Lib路径下
+
+使用步骤：
+1、导入HTMLTestRunner
+2、通过open()方法以二进制写方式打开当前目录的result.html，如果没有，则自行创建该文件
+3、调用HTMLTestRunner下的HTMLTestRunner类，stream指定测试报告文件，title定义测试报告的标题，description用于定义测试报告的副标题
+4、通过HTMLTestRunner的run()方法来运行测试套件中所组装的测试用例
+5、通过close()关闭测试报告文件
+
+6.实现邮件发送功能
+Python对SMTP支持有smtplib和email两个模块，email负责构造邮件，smtplib负责发送邮件。
+发送HTML格式的邮件 send_mail1.py
+发送带附件的邮件 send_mail2.py
+查找最新的测试报告 find_file.py
+整合自动发送邮件的功能 run_all_test_sendmail.py
+
+
